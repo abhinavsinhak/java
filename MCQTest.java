@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 
 public class MCQTest extends JFrame implements ActionListener {
     JLabel label, label1;
-    JRadioButton option1, option2, option3, option4,op1,op2,op3;
+    JRadioButton option1, option2, option3, option4, op1, op2, op3;
     JButton nextBtn, resultBtn;
     JButton next;
     ButtonGroup bg, bg1;
@@ -21,7 +21,7 @@ public class MCQTest extends JFrame implements ActionListener {
     String[][] ooptions = new String[4][5];
     int[] correctAnswers = { 2, 3, 1, 3, 2 };
     int[] correctAnswers1 = {};
-    int[] correctAnswers2 ={};
+    int[] correctAnswers2 = {};
 
     MCQTest(String subject, int age) {
         this.setTitle("MCQ Test - " + subject);
@@ -146,16 +146,15 @@ public class MCQTest extends JFrame implements ActionListener {
         op1.setText("math");
         op2.setText("oops");
         op3.setText("gk");
-        
+
         next = new JButton("Next");
         next.setBounds(400, 400, 100, 30);
         next.addActionListener(this);
         this.add(next);
-        
 
     }
 
-    void showQuestions() {
+    void showQuestions(String[][] questions, String[][] options, String[] correctAnswers) {
         label = new JLabel();
         label.setBounds(50, 50, 500, 30);
         this.add(label);
@@ -193,10 +192,10 @@ public class MCQTest extends JFrame implements ActionListener {
         resultBtn.addActionListener(this);
         this.add(resultBtn);
 
-        setQuestion();
+        setQuestion(gkquestions, gkquestions, null);
     }
 
-    void setQuestion() {
+    void setQuestion(String[][] questions, String[][] options, String[] correctAnswers) {
         bg.clearSelection();
         label.setText("Question " + (current + 1) + ": " + gkquestions[count][0]);
         option1.setText(options[count][0]);
@@ -226,10 +225,10 @@ public class MCQTest extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==next){
-                if(op1.isSelected()){
-                    
-                }
+        if (e.getSource() == next) {
+            if (op1.isSelected()) {
+               
+            }
         }
         if (e.getSource() == nextBtn) {
             if (checkAnswer()) {

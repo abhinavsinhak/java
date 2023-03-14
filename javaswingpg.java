@@ -15,7 +15,7 @@ public class javaswingpg extends JFrame implements ActionListener {
     int[] answer = new int[10];
     String questions[][] = new String[5][5];
     String options[][] = new String[5][5];
-    int[] correctAnswers = { 2, 3, 1, 3, 2, 1, 2, 3, 1, 2 };
+    int[] correctAnswers = { 2, 3, 1 };
     int score = 0;
 
     javaswingpg(String subject, int age) {
@@ -42,6 +42,8 @@ public class javaswingpg extends JFrame implements ActionListener {
 
                     if (age >= 18) {
                         JOptionPane.showMessageDialog(null, "you are eligible");
+                        agefield.setVisible(false);
+                        agelabel.setVisible(false);
                         agebutton.setVisible(false);
                         showquestion();
                     }
@@ -68,7 +70,7 @@ public class javaswingpg extends JFrame implements ActionListener {
         options[2][1] = "Mars";
         options[2][2] = "Jupiter";
         options[2][3] = "Saturn";
-       
+
         this.setVisible(true);
     }
 
@@ -147,8 +149,14 @@ public class javaswingpg extends JFrame implements ActionListener {
             }
             current++;
             count++;
+            setQuestion();
         }
-        
+        if (current == 3) {
+
+            next.setEnabled(false);
+            result.setEnabled(true);
+
+        }
 
     }
 
