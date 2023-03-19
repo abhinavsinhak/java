@@ -81,23 +81,6 @@ public class QuizApp extends JFrame implements ActionListener {
         QuizApp app = new QuizApp();
     }
 
-    public void actionPerformed(ActionEvent event) {
-        Object source = event.getSource();
-        if (source == submitButton) {
-            try {
-                int age = Integer.parseInt(ageField.getText());
-                if (age >= 18) {
-                    ageLabel.setVisible(false);
-                    ageField.setVisible(false);
-                    submitButton.setVisible(false);
-                    subjectLabel.setVisible(true);
-                    subjectComboBox.setVisible(true);
-                }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid age.");
-            }
-        } else if (source == submitAnswerButton) {
-            if (answerButtons[0].isSelected() || answerButtons[
 
 public void actionPerformed(ActionEvent event) {
     Object source = event.getSource();
