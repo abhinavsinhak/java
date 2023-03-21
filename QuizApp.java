@@ -10,17 +10,12 @@ public class QuizApp extends JFrame implements ActionListener {
     private JComboBox<String> subjectComboBox;
     private JRadioButton[] answerButtons;
     private JButton submitButton, submitAnswerButton;
-    private String[][] questions = {
-            {"What is the capital of France?", "Madrid", "Paris", "Berlin", "2"},
-            {"What is the highest mountain in the world?", "K2", "Mount Everest", "Makalu", "2"},
-            {"What is the largest country in the world by land area?", "Russia", "Canada", "China", "1"}
-    };
-    private int questionIndex = 0;
+    private String[][] questions;
+    public int questionIndex = 0;
     private int score = 0;
 
     public QuizApp() {
         setTitle("Quiz App");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(500, 400);
         setLocationRelativeTo(null);
 
@@ -45,7 +40,7 @@ public class QuizApp extends JFrame implements ActionListener {
         subjectLabel.setVisible(false);
         panel.add(subjectLabel);
 
-        String[] subjects = {"Geography", "Science", "History"};
+        String[] subjects = { "JAVA", "Science", "Maths" };
         subjectComboBox = new JComboBox<>(subjects);
         subjectComboBox.setBounds(150, 100, 100, 30);
         subjectComboBox.addActionListener(this);
@@ -54,14 +49,16 @@ public class QuizApp extends JFrame implements ActionListener {
 
         questionLabel = new JLabel("");
         questionLabel.setBounds(50, 150, 400, 30);
-        questionLabel.setVisible(false);
+        questionLabel.setVisible(true);
         panel.add(questionLabel);
 
         answerButtons = new JRadioButton[3];
         ButtonGroup answerGroup = new ButtonGroup();
+        answerGroup.clearSelection();
         for (int i = 0; i < 3; i++) {
+            answerGroup.clearSelection();
             answerButtons[i] = new JRadioButton();
-            answerButtons[i].setBounds(50, 190+i*30, 400, 30);
+            answerButtons[i].setBounds(50, 190 + i * 30, 400, 30);
             answerButtons[i].setVisible(false);
             answerGroup.add(answerButtons[i]);
             panel.add(answerButtons[i]);
@@ -81,77 +78,84 @@ public class QuizApp extends JFrame implements ActionListener {
         QuizApp app = new QuizApp();
     }
 
+    public void actionPerformed(ActionEvent event) {
+        Object source = event.getSource();
 
-public void actionPerformed(ActionEvent event) {
-    Object source = event.getSource();
-    if (source == submitButton) {
-        try {
+        if (source == submitButton) {
+
             int age = Integer.parseInt(ageField.getText());
             if (age >= 18) {
+                JOptionPane.showMessageDialog(null, "you are eligible");
                 ageLabel.setVisible(false);
                 ageField.setVisible(false);
                 submitButton.setVisible(false);
                 subjectLabel.setVisible(true);
                 subjectComboBox.setVisible(true);
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Please enter a valid age.");
-        }
-    } else if (source == submitAnswerButton) {
-        if (answerButtons[0].isSelected() || answerButtons[1].isSelected() || answerButtons[2].isSelected()) {
-            String selectedAnswer = "";
-            for (int i = 0; i < 3; i++) {
-                if (answerButtons[i].isSelected()) {
-                    selectedAnswer = String.valueOf(i+1);
-                    break;
-                }
-            }
-            if (selectedAnswer.equals(questions[questionIndex][4])) {
-                score++;
-            }
-            questionIndex++;
-            if (questionIndex < questions.length) {
-                showQuestion();
             } else {
-                JOptionPane.showMessageDialog(this, "Quiz complete! Your score is " + score + " out of " + questions.length + ".");
-                System.exit(0);
+                JOptionPane.showMessageDialog(null, "you are not eligible");
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Please select an answer.");
-        }
-    } else if (source == subjectComboBox) {
-        String selectedSubject = subjectComboBox.getSelectedItem().toString();
-        if (selectedSubject.equals("Geography")) {
-            questions = new String[][]{
-                    {"What is the capital of France?", "Madrid", "Paris", "Berlin", "2"},
-                    {"What is the highest mountain in the world?", "K2", "Mount Everest", "Makalu", "2"},
-                    {"What is the largest country in the world by land area?", "Russia", "Canada", "China", "1"}
-            };
-        } else if (selectedSubject.equals("Science")) {
-            questions = new String[][]{
-                    {"What is the powerhouse of the cell?", "Mitochondria", "Ribosome", "Nucleus", "1"},
-                    {"What is the smallest unit of matter?", "Atom", "Molecule", "Cell", "1"},
-                    {"What is the largest organ in the human body?", "Liver", "Skin", "Heart", "2"}
-            };
-        } else if (selectedSubject.equals("History")) {
-            questions = new String[][]{
-                    {"Which ancient civilization built the Machu Picchu?", "Maya", "Aztec", "Inca", "3"},
-                    {"Who was the first US President?", "George Washington", "Thomas Jefferson", "Abraham Lincoln", "1"},
-                    {"Which country did Germany invade to start World War II?", "Poland", "Russia", "France", "1"}
-            };
-        }
-        subjectLabel.setVisible(false);
-        subjectComboBox.setVisible(false);
-        showQuestion();
-    }
-}
 
-private void showQuestion() {
-    questionLabel.setText(questions[questionIndex][0]);
-    for (int i = 0; i < 3; i++) {
-        answerButtons[i].setText(questions[questionIndex][i+1]);
-        answerButtons[i].setSelected(false);
-        answerButtons[i].setVisible(true);
+        } else if (source == submitAnswerButton) {
+            if (answerButtons[0].isSelected() || answerButtons[1].isSelected()
+                    || answerButtons[2].isSelected()) {
+                String selectedAnswer = "";
+                for (int i = 0; i < 3; i++) {
+                    if (answerButtons[i].isSelected()) {
+                        selectedAnswer = String.valueOf(i + 1);
+                        break;
+                    }
+                }
+                if (selectedAnswer.equals(questions[questionIndex][4])) {
+                    score++;
+                }
+                questionIndex++;
+                if (questionIndex < questions.length) {
+
+                    showQuestion();
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Quiz complete! Your score is " + score + " out of " + questions.length + ".");
+                    System.exit(0);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Please select an answer.");
+            }
+        } else if (source == subjectComboBox) {
+            String selectedSubject = subjectComboBox.getSelectedItem().toString();
+            if (selectedSubject.equals("JAVA")) {
+                questions = new String[][] {
+                        { "Number of primitive data types in Java are?", "6", "7", "8", "3" },
+                        { "What is the size of float and double in java?", "32 and 64", "32 and 32", "64 and 64", "1" },
+                        { "Arrays in java are-", "Object Reference", "Objects", "Primitive data type", "2" }
+                };
+            } else if (selectedSubject.equals("Biology")) {
+                questions = new String[][] {
+                        { "What is the powerhouse of the cell?", "Mitochondria", "Ribosome", "Nucleus", "1" },
+                        { "What is the smallest unit of matter?", "Atom", "Molecule", "Cell", "1" },
+                        { "What is the largest organ in the human body?", "Liver", "Skin", "Heart", "2" }
+                };
+            } else if (selectedSubject.equals("Maths")) {
+                questions = new String[][] {
+                        { "what is the sum of 5+5?", "10", "13", "5", "1" },
+                        { "what is formula for distance?", "speed * time", "speed*acceleration", "velocity* time",
+                                "1" },
+                        { "what is the value of 2^4?", "16", "32", "8", "1" }
+                };
+            }
+            subjectLabel.setVisible(false);
+            subjectComboBox.setVisible(false);
+            showQuestion();
+        }
     }
-    submitAnswerButton.setVisible(true);
+
+    private void showQuestion() {
+        questionLabel.setText(questions[questionIndex][0]);
+        for (int i = 0; i < 3; i++) {
+
+            answerButtons[i].setText(questions[questionIndex][i + 1]);
+            answerButtons[i].setSelected(false);
+            answerButtons[i].setVisible(true);
+        }
+        submitAnswerButton.setVisible(true);
+    }
 }
