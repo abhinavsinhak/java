@@ -1,51 +1,65 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import java.util.*;
+import java.sql.*;
 
-public class jdbcprogram {
-    public static void main(String[] args) {
-        // Replace with your database URL, username and password
-        String url = "jdbc:mysql://localhost:3306/mydatabase";
-        String user = "root";
-        String password = "Sushant@12";
 
-        // SQL statement for creating a new table
-        String sql = "CREATE TABLE IF NOT EXISTS users ("
-                + "id INT AUTO_INCREMENT PRIMARY KEY,"
-                + "name VARCHAR(255),"
-                + "email VARCHAR(255)"
-                + ")";
-
-        try (Connection conn = DriverManager.getConnection(url, user, password);
-             Statement stmt = conn.createStatement()) {
-            // Create a new table
-            stmt.execute(sql);
-            System.out.println("Table created successfully");
-
-            // Insert data into the table
-            stmt.executeUpdate("INSERT INTO users(name,email) VALUES('John Doe', 'john.doe@example.com')");
-            System.out.println("Data inserted successfully");
-
-            // Update data in the table
-            stmt.executeUpdate("UPDATE users SET name='Jane Doe' WHERE id=1");
-            System.out.println("Data updated successfully");
-        } catch (Exception e) {
-            e.printStackTrace();
+public class jdbcprogram 
+{
+    public static void main(String[] args)
+    {
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch(ClassNotFoundException e){
+            System.out.println("Class not found");
         }
 
-        // Create a JTable to display data from the database
-        Object[][] data = {{"John Doe", "john.doe@example.com"}};
-        String[] columnNames = {"Name", "Email"};
-        JTable table = new JTable(data, columnNames);
+        try{
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/practice","root","Sushant@12");
+            Statement stm = con.createStatement();
 
-        // Create a JFrame to display the JTable
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(new JScrollPane(table));
-        frame.pack();
-        frame.setVisible(true);
+            int r = stm.executeUpdate("create table student(name varchar(30),regno varchar(10),branch varchar(20))");
+            System.out.println("Table Student Created");
+
+            System.out.println("\nTables in Database:");
+            ResultSet rs1 = stm.executeQuery("Show tables");
+            while(rs1.next())
+            {
+                String tables = rs1.getString("Tables_in_practice");
+                System.out.println(tables);
+            }
+            rs1.close();
+            
+            stm.execute("insert into student values('sanjog','21ME1035','Mechanical')");
+            stm.execute("insert into student values('ram','21CH1209','Civil')");
+            stm.execute("insert into student values('Sham','21CS1267','CSE')");
+            ResultSet rs2 = stm.executeQuery("select * from student");
+            System.out.println("\nData in Table Student:");
+            while(rs2.next())
+            {
+                String name = rs2.getString("name");
+                String reg = rs2.getString("regno");
+                String branch = rs2.getString("branch");
+
+                System.out.println(name + "  " + reg + "   " + branch);
+            }
+            rs2.close();
+            
+      System.out.println("\nUpdating row 21CH1209 is from Chemical:");
+            r = stm.executeUpdate("update student set branch='Chemical'                                                                                  where regno='21CH1209'");
+         ResultSet rs3 = stm.executeQuery("select * from student");
+         System.out.println("\nData in Table Student after update:");
+            while(rs3.next())
+            {
+                String name = rs3.getString("name");
+                String reg = rs3.getString("regno");
+                String branch = rs3.getString("branch");
+
+                System.out.println(name + "  " + reg + "   " + branch);
+            }
+
+
+            con.close();
+        } catch(SQLException e){
+            System.out.println("Error!!!   " + e);
+        }
     }
 }
