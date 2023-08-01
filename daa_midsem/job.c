@@ -1,30 +1,34 @@
+
 #include <stdio.h>
 #include <stdbool.h>
 
-// Structure to represent a job/task
-struct Job {
-    char name;      // Job name
-    int duration;   // Time required to complete the job
-    int deadline;   // Job deadline
-};
+#define MAX_JOBS 100
 
 // Function to sort jobs based on their deadlines in ascending order
-void sortByDeadline(struct Job jobs[], int n) {
+void sortByDeadline(char names[], int durations[], int deadlines[], int n) {
     for (int i = 0; i < n - 1; i++) {
         for (int j = 0; j < n - i - 1; j++) {
-            if (jobs[j].deadline > jobs[j + 1].deadline) {
-                // Swap the jobs
-                struct Job temp = jobs[j];
-                jobs[j] = jobs[j + 1];
-                jobs[j + 1] = temp;
+            if (deadlines[j] > deadlines[j + 1]) {
+                // Swap the jobs' details
+                char tempName = names[j];
+                int tempDuration = durations[j];
+                int tempDeadline = deadlines[j];
+
+                names[j] = names[j + 1];
+                durations[j] = durations[j + 1];
+                deadlines[j] = deadlines[j + 1];
+
+                names[j + 1] = tempName;
+                durations[j + 1] = tempDuration;
+                deadlines[j + 1] = tempDeadline;
             }
         }
     }
 }
 
 // Function to schedule jobs using the Earliest Deadline First (EDF) algorithm
-void scheduleJobs(struct Job jobs[], int n) {
-    sortByDeadline(jobs, n);
+void scheduleJobs(char names[], int durations[], int deadlines[], int n) {
+    sortByDeadline(names, durations, deadlines, n);
 
     int currentTime = 0;
 
@@ -32,9 +36,9 @@ void scheduleJobs(struct Job jobs[], int n) {
     printf("Job Name\tExecution Time\n");
 
     for (int i = 0; i < n; i++) {
-        if (currentTime < jobs[i].deadline) {
-            printf("%c\t\t%d\n", jobs[i].name, jobs[i].duration);
-            currentTime += jobs[i].duration;
+        if (currentTime < deadlines[i]) {
+            printf("%c\t\t%d\n", names[i], durations[i]);
+            currentTime += durations[i];
         }
     }
 }
@@ -44,15 +48,17 @@ int main() {
     printf("Enter the number of jobs: ");
     scanf("%d", &n);
 
-    struct Job jobs[n];
+    char names[MAX_JOBS];
+    int durations[MAX_JOBS];
+    int deadlines[MAX_JOBS];
 
     // Input job details from the user
     for (int i = 0; i < n; i++) {
         printf("Enter the name, duration, and deadline for job %d: ", i + 1);
-        scanf(" %c%d%d", &jobs[i].name, &jobs[i].duration, &jobs[i].deadline);
+        scanf(" %c%d%d", &names[i], &durations[i], &deadlines[i]);
     }
 
-    scheduleJobs(jobs, n);
+    scheduleJobs(names, durations, deadlines, n);
 
     return 0;
 }
