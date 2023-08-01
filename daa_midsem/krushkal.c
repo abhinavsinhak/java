@@ -1,68 +1,78 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#define MAX_VERTICES 100
-#define INF 999999
+#define MAX_EDGES 100
 
-int findMinKeyVertex(int key[], bool inMST[], int V) {
-    int minKey = INF;
-    int minIndex = -1;
+struct Edge {
+    int src;
+    int dest;
+    int weight;
+};
 
-    for (int v = 0; v < V; v++) {
-        if (!inMST[v] && key[v] < minKey) {
-            minKey = key[v];
-            minIndex = v;
+void sortEdges(struct Edge edges[], int m) {
+    for (int i = 0; i < m - 1; i++) {
+        for (int j = 0; j < m - i - 1; j++) {
+            if (edges[j].weight > edges[j + 1].weight) {
+                struct Edge temp = edges[j];
+                edges[j] = edges[j + 1];
+                edges[j + 1] = temp;
+            }
         }
     }
-
-    return minIndex;
 }
 
-void kruskalMST(int graph[MAX_VERTICES][MAX_VERTICES], int V) {
-    int parent[MAX_VERTICES];
-    int key[MAX_VERTICES];
-    bool inMST[MAX_VERTICES];
+int findParent(int parent[], int node) {
+    if (parent[node] != node) {
+        parent[node] = findParent(parent, parent[node]);
+    }
+    return parent[node];
+}
 
-    for (int i = 0; i < V; i++) {
-        key[i] = INF;
-        inMST[i] = false;
+void unionSets(int parent[], int x, int y) {
+    int xParent = findParent(parent, x);
+    int yParent = findParent(parent, y);
+    parent[xParent] = yParent;
+}
+
+void kruskalMST(struct Edge edges[], int n, int m) {
+    sortEdges(edges, m);
+
+    int parent[n];
+    for (int i = 0; i < n; i++) {
+        parent[i] = i;
     }
 
-    key[0] = 0;
-    parent[0] = -1;
+    struct Edge mst[MAX_EDGES];
+    int mstSize = 0;
 
-    for (int count = 0; count < V - 1; count++) {
-        int u = findMinKeyVertex(key, inMST, V);
+    for (int i = 0; i < m; i++) {
+        int srcParent = findParent(parent, edges[i].src);
+        int destParent = findParent(parent, edges[i].dest);
 
-        inMST[u] = true;
-
-        for (int v = 0; v < V; v++) {
-            if (graph[u][v] != 0 && !inMST[v] && graph[u][v] < key[v]) {
-                parent[v] = u;
-                key[v] = graph[u][v];
-            }
+        if (srcParent != destParent) {
+            mst[mstSize++] = edges[i];
+            unionSets(parent, srcParent, destParent);
         }
     }
 
     printf("Minimum Spanning Tree:\n");
-    printf("Edge \tWeight\n");
-    for (int i = 1; i < V; i++) {
-        printf("%d - %d \t%d\n", parent[i], i, graph[i][parent[i]]);
+    for (int i = 0; i < mstSize; i++) {
+        printf("(%d, %d) weight: %d\n", mst[i].src, mst[i].dest, mst[i].weight);
     }
 }
 
 int main() {
-    int V;
-    scanf("%d", &V);
+    int n, m;
+    printf("Enter the number of nodes and edges in the graph: ");
+    scanf("%d %d", &n, &m);
 
-    int graph[MAX_VERTICES][MAX_VERTICES];
-    for (int i = 0; i < V; i++) {
-        for (int j = 0; j < V; j++) {
-            scanf("%d", &graph[i][j]);
-        }
+    struct Edge edges[MAX_EDGES];
+    printf("Enter the source, destination, and weight of each edge:\n");
+    for (int i = 0; i < m; i++) {
+        scanf("%d %d %d", &edges[i].src, &edges[i].dest, &edges[i].weight);
     }
 
-    kruskalMST(graph, V);
+    kruskalMST(edges, n, m);
 
     return 0;
 }
