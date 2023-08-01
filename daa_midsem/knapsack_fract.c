@@ -1,42 +1,41 @@
 #include <stdio.h>
-#include <stdbool.h>
 
-struct Item {
-    int weight;
-    int value;
-};
-
-void swap(struct Item* a, struct Item* b) {
-    struct Item temp = *a;
+void swap(double* a, double* b) {
+    double temp = *a;
     *a = *b;
     *b = temp;
 }
 
-void bubbleSort(struct Item items[], int n) {
+void bubbleSort(double valuePerWeight[], int weight[], int value[], int n) {
     for (int i = 0; i < n - 1; i++) {
         for (int j = 0; j < n - i - 1; j++) {
-            double ratio1 = (double)items[j].value / items[j].weight;
-            double ratio2 = (double)items[j + 1].value / items[j + 1].weight;
-            if (ratio1 < ratio2) {
-                swap(&items[j], &items[j + 1]);
+            if (valuePerWeight[j] < valuePerWeight[j + 1]) {
+                swap(&valuePerWeight[j], &valuePerWeight[j + 1]);
+                swap(&weight[j], &weight[j + 1]);
+                swap(&value[j], &value[j + 1]);
             }
         }
     }
 }
 
-double fractionalKnapsack(int W, struct Item items[], int n) {
-    bubbleSort(items, n);
+double fractionalKnapsack(int W, int weight[], int value[], int n) {
+    double valuePerWeight[n];
+    for (int i = 0; i < n; i++) {
+        valuePerWeight[i] = (double)value[i] / weight[i];
+    }
+
+    bubbleSort(valuePerWeight, weight, value, n);
 
     int currentWeight = 0;
     double finalValue = 0.0;
 
     for (int i = 0; i < n; i++) {
-        if (currentWeight + items[i].weight <= W) {
-            currentWeight += items[i].weight;
-            finalValue += items[i].value;
+        if (currentWeight + weight[i] <= W) {
+            currentWeight += weight[i];
+            finalValue += value[i];
         } else {
             int remainingWeight = W - currentWeight;
-            finalValue += (double)remainingWeight * items[i].value / items[i].weight;
+            finalValue += (double)remainingWeight * valuePerWeight[i];
             break;
         }
     }
@@ -53,13 +52,14 @@ int main() {
     printf("Enter the number of items: ");
     scanf("%d", &n);
 
-    struct Item items[n];
+    int weight[n];
+    int value[n];
     printf("Enter the weight and value of each item:\n");
     for (int i = 0; i < n; i++) {
-        scanf("%d %d", &items[i].weight, &items[i].value);
+        scanf("%d %d", &weight[i], &value[i]);
     }
 
-    double maxValue = fractionalKnapsack(W, items, n);
+    double maxValue = fractionalKnapsack(W, weight, value, n);
     printf("Maximum value that can be obtained is: %.2lf\n", maxValue);
 
     return 0;
