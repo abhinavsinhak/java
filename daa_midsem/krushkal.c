@@ -18,7 +18,7 @@ int findMinKeyVertex(int key[], bool inMST[], int V) {
     return minIndex;
 }
 
-void primMST(int graph[MAX_VERTICES][MAX_VERTICES], int V) {
+void kruskalMST(int graph[MAX_VERTICES][MAX_VERTICES], int V) {
     int parent[MAX_VERTICES];
     int key[MAX_VERTICES];
     bool inMST[MAX_VERTICES];
@@ -53,18 +53,16 @@ void primMST(int graph[MAX_VERTICES][MAX_VERTICES], int V) {
 
 int main() {
     int V;
-    printf("Enter the number of vertices in the graph: ");
     scanf("%d", &V);
 
     int graph[MAX_VERTICES][MAX_VERTICES];
-    printf("Enter the adjacency matrix of the graph:\n");
     for (int i = 0; i < V; i++) {
         for (int j = 0; j < V; j++) {
             scanf("%d", &graph[i][j]);
         }
     }
 
-    primMST(graph, V);
+    kruskalMST(graph, V);
 
     return 0;
 }
