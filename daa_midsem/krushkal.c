@@ -62,7 +62,30 @@ void unionSets(int parent[], int x, int y) {
 }
 
 void kruskalMST(struct Edge edges[], int n, int m) {
-    // ... (the rest of the kruskalMST function remains the same)
+    sortEdges(edges, m);
+
+    int parent[n];
+    for (int i = 0; i < n; i++) {
+        parent[i] = i;
+    }
+
+    struct Edge mst[MAX_EDGES];
+    int mstSize = 0;
+
+    for (int i = 0; i < m; i++) {
+        int srcParent = findParent(parent, edges[i].src);
+        int destParent = findParent(parent, edges[i].dest);
+
+        if (srcParent != destParent) {
+            mst[mstSize++] = edges[i];
+            unionSets(parent, srcParent, destParent);
+        }
+    }
+
+    printf("Minimum Spanning Tree:\n");
+    for (int i = 0; i < mstSize; i++) {
+        printf("(%d, %d) weight: %d\n", mst[i].src, mst[i].dest, mst[i].weight);
+    }
 }
 
 int main() {
